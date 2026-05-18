@@ -1,66 +1,40 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+import {useRouter} from 'next/navigation';
+import {useState} from 'react';
+import {getSocket} from '../lib/socket';
+
+const socket = getSocket()
+
+export default function MainPage (){
+    const router = useRouter()
+    const [gameCode, setGamecode] = useState("")
+
+    const handleCreateGame = () => {
+        const randomId = Math.random().toString(36).substring(2,8)
+        router.push(`/game/${randomId}`)
+    }
+
+    const handleJoinGame = () => {
+        socket.emit("checkGame", gameCode, (exists: boolean) => {
+            if(!exists){
+                console.log("Game not found!")
+            return
+            }
+            router.push(`/game/${gameCode}`)
+        })
+    }
+
+    return (
+        <div className="main-page">
+            <button onClick={handleCreateGame}>Create game</button> 
+            <button onClick={handleJoinGame}>Join game</button>
+            <input
+                className='game-code-input'
+                placeholder='Enter the id of the game'
+                value={gameCode}
+                onChange={(e) => setGamecode(e.target.value)}
             />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
         </div>
-      </main>
-    </div>
-  );
+    )
 }

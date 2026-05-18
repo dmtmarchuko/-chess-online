@@ -1,0 +1,113 @@
+@use 'sass:math';
+
+@mixin visually-hidden{
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    border: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    clip-path: inset(100%) !important;
+    clip: rect(0 0 0 0) !important;
+    overflow: hidden !important;
+}
+
+@function fluid($max: 100, $min: 10) {
+  $maxViewportWidth: 1920;
+  $minViewportWidth: 390;
+
+  $maxSize: math.div($max, 16);
+  $minSize: math.div($min, 16);
+  $maxWidth: math.div($maxViewportWidth, 16);
+  $minWidth: math.div($minViewportWidth, 16);
+
+  $slope: math.div(($maxSize - $minSize), ($maxWidth - $minWidth));
+  $yAxisIntersection: -$minWidth * $slope + $minSize;
+
+  @return clamp(
+    #{$minSize * 1rem},
+    #{$yAxisIntersection * 1rem} + #{$slope * 100vw},
+    #{$maxSize * 1rem}
+  );
+}
+
+@function rem($pixel) {
+  @if math.is-unitless($pixel) {
+    @return math.div($pixel, 16) + rem;
+  } @else {
+    @error 'Не используйте единицы измерения при работе с функцией rem()! Передавайте аргументом только числа.'
+  }
+}
+
+$laptop: 1440.98;
+$tablet: 1023.98;
+$mobile:767.98;
+$mobile-s:480.98;
+
+@mixin laptop {
+    @media (width <= rem($laptop)){
+        @content;
+    }
+}
+
+@mixin laptop-above {
+    @media (width > rem($laptop)){
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (width <= rem($tablet)){
+        @content;
+    }
+}
+
+@mixin tablet-above {
+    @media (width > rem($tablet)){
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (width <= rem($mobile)){
+        @content;
+    }
+}
+
+@mixin mobile-above {
+    @media (width > rem($mobile)){
+        @content;
+    }
+}
+
+@mixin mobile-s {
+    @media (width <= rem($mobile-s)){
+        @content;
+    }
+}
+
+@mixin mobile-s-above {
+    @media (width > rem($mobile-s)){
+        @content;
+    }
+}
+
+@mixin hover($hasActiveEffectOnMobile: true) {
+    @media (any-hover: hover){
+        &:hover {
+            @content;
+        }
+    }
+    @if ($hasActiveEffectOnMobile){
+        @media (any-hover: none){
+            &:active{
+                @content;
+            }
+        }
+    }
+}
+
+@mixin fluid-text($max: 48, $min: 16) {
+  font-size: fluid($max, $min);
+}

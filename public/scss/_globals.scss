@@ -1,0 +1,46 @@
+@use './helpers' as *;
+
+body{
+    background-color:#343434;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100vw;
+}
+
+button{
+    background-color:#111522;
+    color:#999999;
+    width: rem(200);
+    height: rem(50);
+    border-radius: rem(10);
+    cursor: pointer;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.main-page{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    gap: rem(20);
+}
+
+.game-code-input{
+    width: rem(180);
+    height: rem(20);
+    border-radius: rem(10);
+    padding: rem(10);
+}
+
+.chess-page{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap: rem(10);
+}
