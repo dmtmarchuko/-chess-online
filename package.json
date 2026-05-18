@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js & next dev",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "node server.js & next start"
+    "start": "node server.js"
   },
   "dependencies": {
     "chess.js": "^1.4.0",
