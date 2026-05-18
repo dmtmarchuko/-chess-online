@@ -1,10 +1,14 @@
-const {createServer} = require("http")
+const http = require("http")
 const {Server} = require("socket.io")
 const {Chess} = require("chess.js")
 
-const httpServer = createServer()
+const server = http.createServer((res, req) => {
+    handler(res, req)
+})
 
-const io = new Server(httpServer, {
+const PORT = process.env.PORT || 3002
+
+const io = new Server(server, {
     cors:{
         origin:"*",
     }
@@ -13,7 +17,7 @@ const io = new Server(httpServer, {
 const games = {}
 
 io.on("connection", (socket) => {
-    
+
     socket.on("checkGame", (gameId, callback) => {
         const exists = !!games[gameId]
         callback(exists)
@@ -82,6 +86,6 @@ io.on("connection", (socket) => {
     })
 })
 
-httpServer.listen(3002, () => {
-    console.log("Socket server running on port 3002")
+server.listen(PORT, () => {
+    console.log("Socket server running on port 8080")
 })
