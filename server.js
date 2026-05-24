@@ -1,20 +1,25 @@
 const http = require("http")
 const {Server} = require("socket.io")
 const {Chess} = require("chess.js")
+const nest = require("next")
 
-const server = http.createServer((res, req) => {
-    handler(res, req)
-})
-
-const PORT = process.env.PORT || 3002
-
-const io = new Server(server, {
-    cors:{
-        origin:"*",
-    }
-})
+const dev = process.env.NODE_ENV !== "production"
+const app = nest({dev})
+const handler = app.getRequestHandler()
 
 const games = {}
+
+app.prepare().then(() => {
+    const server = http.createServer((res, req) => {
+        handler(res, req)
+    })
+
+    const io = new Server(server, {
+        cors:{
+            origin:"*",
+        }
+    })
+})
 
 io.on("connection", (socket) => {
 
@@ -86,6 +91,8 @@ io.on("connection", (socket) => {
     })
 })
 
+const PORT = process.env.PORT || 3002
+
 server.listen(PORT, () => {
-    console.log("Socket server running on port 8080")
+    console.log("Socket server running on port ", PORT)
 })
